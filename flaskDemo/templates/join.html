@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+	  {% for row in joined_m_n %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <small class="text-muted">{{ row.fname }} {{ row.minit }}  {{ row.lname }} {{row.ssn}} {{row.hours}} {{row.pname}} {{row.pnumber}}</small>
+            </div>
+          </div>
+        </article>
+     {% endfor %}
+{% endblock content %}

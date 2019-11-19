@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for row in joined_m_n %}
+        <article class="media content-section">
+          <div class="media-body">
+            <h2><a class="article-title" href="{{ url_for('assign', pno=row.pno, essn=row.essn)}}">{{ row['fname'] }} {{ row['minit'] }}. {{ row['lname'] }} + {{ row['pname'] }}</a></h2>
+			<div class="article-metadata">
+              <small class="text-muted">Employee SSN: {{ row.essn }}</small><br>		
+              <small class="text-muted">Project #{{ row.pno }}</small><br>		
+			  <small class="text-muted">Hours: {{ row['hours'] }}</small>		  			  
+            </div>
+          </div>
+        </article>
+     {% endfor %}
+{% endblock content %}
