@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Welcome to the Genome Database! Please log in to query data.</h1>
+    {% for row in outString %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ row }}</a>		  
+              <small class="text-muted">{{ row['gene_name'] }}  {{ row['gene_type'] }}</small>		  
+            </div>
+			
+           
+          </div>
+        </article>
+     {% endfor %}
+{% endblock content %}

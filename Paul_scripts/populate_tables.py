@@ -1,13 +1,13 @@
 #Dynamically populate the tables
-
+import pandas as pd
 import mysql.connector
 from mysql.connector import Error
 
 
 conn = mysql.connector.connect(host='localhost',
-                                       database='genome_db',
+                                       database='sam',
                                        user='paul',
-                                       password='***')#put your user and password
+                                       password='Paul1512$')#put your user and password
 
 
 if conn.is_connected():
@@ -15,7 +15,7 @@ if conn.is_connected():
 
 cursor = conn.cursor()
 
-
+"""
 def insert_algorithm (_id, desc):
     query = "INSERT INTO algorithm(algorithm_id, algorithm_description) " \
             "VALUES(%s,%s)"
@@ -44,7 +44,7 @@ for keys, values in pop_dict.items():
 	insert_population(keys,values)
 	print(keys, values)
 
-import pandas as pd
+
 #gene annotation
 geneanotfile = "/Users/okoro/OneDrive/Desktop/ml_predictdb/Paul_scripts/gencode.v18.annotation.parsed.txt"
 anot = pd.read_csv(geneanotfile, sep = "\t")
@@ -67,7 +67,9 @@ for i in range(len(anot)):
 	insert_gene (gene_id, gene_name, gene_type, gene_chr)
 	print(gene_id, gene_name, gene_type, gene_chr)
 
+"""
 
+"""
 pops = ["AFA", "CAU", "HIS"]
 
 #gene models
@@ -92,7 +94,7 @@ for pop in pops:
     knn_model = pd.read_csv(knn_file, dtype=types_dict, sep="\t")
     knn_model = knn_model[knn_head]
 
-    for i in range(4):
+    for i in range(200):#len(knn_model)):
             gene_id = knn_model.iloc[i,0]
             pop_id = pop
             cross_val = (knn_model.iloc[i,1])
@@ -123,7 +125,7 @@ for pop in pops:
     rf_model = pd.read_csv(rf_file, dtype=types_dict, sep="\t")
     rf_model = rf_model[rf_head]
 
-    for i in range(4):
+    for i in range(200):#len(rf_model)):
         gene_id = rf_model.iloc[i,0]
         pop_id = pop
         cross_val = rf_model.iloc[i,1]
@@ -153,7 +155,7 @@ for pop in pops:
     svr_model = pd.read_csv(svr_file, dtype=types_dict, sep="\t")
     svr_model = svr_model[svr_head]
 
-    for i in range(4):
+    for i in range(200):#len(svr_model)
         gene_id = svr_model.iloc[i,0]
         pop_id = pop
         cross_val = svr_model.iloc[i,1]
@@ -165,3 +167,4 @@ for pop in pops:
 
 conn.commit() #you can cmment it out just so that it won't run and populate database
 conn.close()
+"""
