@@ -9,8 +9,14 @@ from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
 import sys
 
+"""
+@app.route("/")
+@app.route("/home")
+def home():
+    genes = Gene.query.all()
+    return render_template('all_gene.html', outString = genes)
 
-
+"""
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/home", methods=['GET', 'POST'])
 def home():
@@ -70,7 +76,6 @@ def home():
         return render_template('query_genome_database.html', title='Query Genome Database',
                                form=form, legend='Query Genome Database')
     return render_template('all_gene.html', outString = genes)
-
 
 
 

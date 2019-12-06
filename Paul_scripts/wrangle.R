@@ -25,10 +25,20 @@ write.table(afa_knn, file = "/Users/okoro/Onedrive/Desktop/ml_predictdb/Paul_scr
 
 afa_rf <- read.table(file = "/Users/okoro/Onedrive/Desktop/ml_predictdb/Paul_scripts/AFA_best_grid_rf_all_chrom.txt", header = T)
 afa_rf$Gene_ID <- as.character(afa_rf$Gene_ID)
+dup <- c('ENSG00000020633.14', 'ENSG00000162390.13', 'ENSG00000121940.11', 'ENSG00000118217.5', 'ENSG00000123684.8', 'ENSG00000030110.8', 'ENSG00000111640.10', 'ENSG00000064763.5', 'ENSG00000139637.9', 'ENSG00000139318.7', 'ENSG00000111361.8', 'ENSG00000198718.8', 'ENSG00000178974.5', 'ENSG00000100601.5', 'ENSG00000140740.6', 'ENSG00000102974.10', 'ENSG00000103168.12', 'ENSG00000129245.7', 'ENSG00000108306.7', 'ENSG00000178307.5', 'ENSG00000070540.8', 'ENSG00000141552.13', 'ENSG00000104980.3', 'ENSG00000099330.4', 'ENSG00000105656.7', 'ENSG00000167380.12', 'ENSG00000160439.10', 'ENSG00000089050.10', 'ENSG00000125843.6', 'ENSG00000078804.8', 'ENSG00000172315.5', 'ENSG00000130699.11', 'ENSG00000128322.6', 'ENSG00000099977.9', 'ENSG00000128335.9', 'ENSG00000196576.10', 'ENSG00000100316.11')
+
+for (i in 1:length(dup)){
+  dup[i] <- gsub('\\.[0-9]+','',dup[i])
+} #just to remove the decimal places in the gene_id
+
+afa_rf <- subset(afa_rf, Gene_ID == dup)
+
 for (i in 1:length(afa_rf$Gene_ID)){
   afa_rf$Gene_ID[i] <- gsub('\\.[0-9]+','',afa_rf$Gene_ID[i])
 } #just to remove the decimal places in the gene_id
 afa_rf <- subset(afa_rf, CV_R2 > 0.6)
+
+
 
 write.table(afa_rf, file = "/Users/okoro/Onedrive/Desktop/ml_predictdb/Paul_scripts/AFA_best_grid_rf_all_chrom.txt", row.names = F, quote = F, sep = "\t")
 

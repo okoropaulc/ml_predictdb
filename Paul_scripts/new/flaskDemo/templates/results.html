@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+	{% if results is none %}
+		<h1>No results!</h1>
+	{% else %}
+		<table class="table">
+			<thead class="bg-primary"
+				<tr>
+					<th>Algorithm</th>
+					<th>Gene</th>
+					<th>Gene Type</th>
+					<th>Chromosome No.</th>
+					<th>Population</th>
+					<th>Cross-Val Performance</th>
+				</tr>
+			</thead>
+			{% for row in results %}
+				<tr>
+					<td>{{ algo }}</td>
+					<td>{{ row.gene_name }}</td>
+					<td>{{ row.gene_type }}</td>
+					<td>{{ row.chromosome_no }}</td>
+					<td>{{ row.population_description }}</td>
+					<td><b>{{ row.cross_val_performance }}</b></td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
+{% endblock content %}

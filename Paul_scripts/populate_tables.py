@@ -5,7 +5,7 @@ from mysql.connector import Error
 
 
 conn = mysql.connector.connect(host='localhost',
-                                       database='sam',
+                                       database='paul',
                                        user='paul',
                                        password='Paul1512$')#put your user and password
 
@@ -69,7 +69,17 @@ for i in range(len(anot)):
 
 """
 
-"""
+def unique(model): #to remove duplicate gene_id
+	notunik = model["Gene_ID"].tolist()
+	unik = list(set(notunik))
+	for i in unik:
+		if i in notunik:
+			notunik.remove(i)
+	model = model[~model["Gene_ID"].isin(notunik)]
+	return model
+
+
+
 pops = ["AFA", "CAU", "HIS"]
 
 #gene models
@@ -93,8 +103,9 @@ for pop in pops:
     types_dict.update({col: str for col in col_names if col not in types_dict})
     knn_model = pd.read_csv(knn_file, dtype=types_dict, sep="\t")
     knn_model = knn_model[knn_head]
+    knn_model = unique(knn_model)
 
-    for i in range(200):#len(knn_model)):
+    for i in range(len(knn_model)):
             gene_id = knn_model.iloc[i,0]
             pop_id = pop
             cross_val = (knn_model.iloc[i,1])
@@ -124,8 +135,9 @@ for pop in pops:
     types_dict.update({col: str for col in col_names if col not in types_dict})
     rf_model = pd.read_csv(rf_file, dtype=types_dict, sep="\t")
     rf_model = rf_model[rf_head]
+    rf_model = unique(rf_model)
 
-    for i in range(200):#len(rf_model)):
+    for i in range(len(rf_model)):
         gene_id = rf_model.iloc[i,0]
         pop_id = pop
         cross_val = rf_model.iloc[i,1]
@@ -154,8 +166,9 @@ for pop in pops:
     types_dict.update({col: str for col in col_names if col not in types_dict})
     svr_model = pd.read_csv(svr_file, dtype=types_dict, sep="\t")
     svr_model = svr_model[svr_head]
+    svr_model = unique(svr_model)
 
-    for i in range(200):#len(svr_model)
+    for i in range(len(svr_model)):
         gene_id = svr_model.iloc[i,0]
         pop_id = pop
         cross_val = svr_model.iloc[i,1]
@@ -167,4 +180,26 @@ for pop in pops:
 
 conn.commit() #you can cmment it out just so that it won't run and populate database
 conn.close()
+
+"""
+#to find the duplicates
+notunik = rf_model["Gene_ID"].tolist()
+unik = list(set(notunik))
+
+for i in unik:
+	if i in notunik:
+		notunik.remove(i)
+
+rfm = rf_model[rf_model["Gene_ID"].isin(notunik)] #keep gene_id that is not uniq
+rfn = rf_model[~rf_model["Gene_ID"].isin(notunik)] #Keep gene_id that is unique
+
+
+def unique(model):
+	notunik = model["Gene_ID"].tolist()
+	unik = list(set(notunik))
+	for i in unik:
+		if i in notunik:
+			notunik.remove(i)
+	model = model[~model["Gene_ID"].isin(notunik)]
+	return model
 """
