@@ -3,7 +3,7 @@ import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from flaskDemo import app, db, bcrypt
-from flaskDemo.forms import RegistrationForm, LoginForm, GeneModelForm
+from flaskDemo.forms import Add_Gene_Model, KNN, RF, SVR, RegistrationForm, LoginForm, GeneModelForm
 from flaskDemo.models import Algorithm, Gene, Job, KNN_Model, Population, Pred_Result, RF_Model, SVR_Model, User
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
@@ -98,7 +98,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-
+"""
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -114,6 +114,48 @@ def login():
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+"""
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            if user.user_type == "Admin":
+                next_page = request.args.get('next')
+                return redirect(next_page) if next_page else redirect(url_for('admin_home'))
+            else:
+                next_page = request.args.get('next')
+                return redirect(next_page) if next_page else redirect(url_for('regular_home'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+"""        
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+"""
+
+
+@app.route("/admin_home")
+def admin_home():
+    if current_user.is_authenticated:
+        return "Welcome to Admin Page"
+
+
+@app.route("/regular_home")
+def regular_home():
+    if current_user.is_authenticated:
+        return "Welcome to Regular Page"
 
 @app.route("/logout")
 def logout():
@@ -124,3 +166,19 @@ def logout():
 @login_required
 def account():
     return ""
+
+@app.route("/knn_model", methods=['GET', 'POST'])
+def knn_model():
+    form = KNN()
+    if form.validate_on_submit():
+        gene = Gene.query.filter_by(gene_name=form.genename.data).first()
+        knn = KNN_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
+                        cross_val_performance=form.cross_val.data,
+                        neighbors=form.neigbor.data, weight=form.weight.data,
+                        p=form.p.data)
+        db.session.add(knn)
+        db.session.commit()
+        flash("You have added the gene model")
+        return redirect(url_for('home'))
+    return render_template('knn_model.html', title='New KNN Gene Model',
+                           form=form, legend='KNN Model')

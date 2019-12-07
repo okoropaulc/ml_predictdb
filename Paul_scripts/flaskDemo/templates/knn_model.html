@@ -1,0 +1,47 @@
+{% extends "add_gene_model.html" %}
+
+			{% block model %}
+			
+            <div class="form-group">
+                {{ form.neigbor.label(class="form-control-label") }}
+                {% if form.neigbor.errors %}
+                    {{ form.neigbor(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.neigbor.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.neigbor(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+			
+			<div class="form-group">
+                {{ form.weight.label(class="form-control-label") }}
+                {% if form.weight.errors %}
+                    {{ form.weight(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.weight.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.weight(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+			
+			<div class="form-group">
+                {{ form.p.label(class="form-control-label") }}
+                {% if form.p.errors %}
+                    {{ form.p(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.p.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.p(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+			{% endblock model %}
+			

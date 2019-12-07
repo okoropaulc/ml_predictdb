@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, IntegerField, DateField, SelectField, HiddenField, DecimalField, SelectMultipleField
+from wtforms import DecimalField, StringField, PasswordField, SubmitField, BooleanField, TextAreaField, IntegerField, DateField, SelectField, HiddenField, DecimalField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp, InputRequired
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flaskDemo import db
@@ -9,6 +9,44 @@ from flaskDemo.models import Algorithm, Gene, Job, KNN_Model, Population, Pred_R
 from wtforms.fields.html5 import DateField
 from wtforms.fields import Field
 import sys
+
+
+gene_names = Gene.query.with_entities(Gene.gene_name).distinct()
+gene_name_choices = [(row[0], row[0]) for row in gene_names]
+
+pop_id = Population.query.with_entities(Population.population_id).distinct()
+pop = [(row[0], row[0]) for row in pop_id]
+
+class Add_Gene_Model(FlaskForm):
+    genename = SelectField("Gene Name", choices=gene_name_choices,
+                           validators=[InputRequired()])
+    pop_id = SelectField("Population ID", choices=pop,
+                         validators=[InputRequired()])
+    cross_val = DecimalField("Cross Validation Value",
+                             validators=[InputRequired()])
+
+class KNN(Add_Gene_Model):
+    neigbor = IntegerField("Neigbour", validators=[DataRequired()])
+    weight = StringField("Weight", validators=[DataRequired(), Length(min=5, max=20)])
+    p = IntegerField("P", validators=[DataRequired()])
+    submit = SubmitField("Add Gene Model")
+
+    def validate_genename(self, genename):
+        gene = Gene.query.filter_by(gene_name=genename.data).first()
+        knndb = KNN_Model.query.filter_by(gene_id=gene.gene_id).first()
+        if knndb and (str(knndb.population_id) == str(self.pop_id.data)):
+            raise ValidationError("There is a model for that gene")
+
+class RF(Add_Gene_Model):
+    tree = IntegerField("Tree", validators=[DataRequired()])
+    submit = SubmitField("Add Gene Model")
+
+
+class SVR(Add_Gene_Model):
+    kernel = StringField("Kernel", validators=[DataRequired(), Length(min=1, max=20)])
+    degree = IntegerField("Degree", validators=[DataRequired()])
+    c = DecimalField("C", validators=[DataRequired()])
+    submit = SubmitField("Add Gene Model")
 
 class RegistrationForm(FlaskForm):
     firstname = StringField('First Name',
