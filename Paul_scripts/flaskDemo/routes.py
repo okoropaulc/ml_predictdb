@@ -182,3 +182,35 @@ def knn_model():
         return redirect(url_for('home'))
     return render_template('knn_model.html', title='New KNN Gene Model',
                            form=form, legend='KNN Model')
+
+
+@app.route("/rf_model", methods=['GET', 'POST'])
+def rf_model():
+    form = RF()
+    if form.validate_on_submit():
+        gene = Gene.query.filter_by(gene_name=form.genename.data).first()
+        rf = RF_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
+                        cross_val_performance=form.cross_val.data,
+                        trees=form.tree.data)
+        db.session.add(rf)
+        db.session.commit()
+        flash("You have added the gene model")
+        return redirect(url_for('home'))
+    return render_template('rf_model.html', title='New RF Gene Model',
+                           form=form, legend='RF Model')
+
+
+@app.route("/svr_model", methods=['GET', 'POST'])
+def svr_model():
+    form = SVR()
+    if form.validate_on_submit():
+        gene = Gene.query.filter_by(gene_name=form.genename.data).first()
+        svr = SVR_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
+                        cross_val_performance=form.cross_val.data,
+                        kernel=form.kernel.data, degree=form.degree.data, c=form.c.data)
+        db.session.add(svr)
+        db.session.commit()
+        flash("You have added the gene model")
+        return redirect(url_for('home'))
+    return render_template('svr_model.html', title='New SVR Gene Model',
+                           form=form, legend='SVR Model')

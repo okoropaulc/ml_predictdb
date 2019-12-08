@@ -19,7 +19,9 @@ pop = [(row[0], row[0]) for row in pop_id]
 
 class Add_Gene_Model(FlaskForm):
     genename = SelectField("Gene Name", choices=gene_name_choices,
-                           validators=[InputRequired()])
+                           validators=[InputRequired()]) #I used gene name to make it easier for
+    #users to be able to search genes. Then with gene name, I can get the gene_id and add that to
+    #the model table
     pop_id = SelectField("Population ID", choices=pop,
                          validators=[InputRequired()])
     cross_val = DecimalField("Cross Validation Value",
@@ -35,11 +37,17 @@ class KNN(Add_Gene_Model):
         gene = Gene.query.filter_by(gene_name=genename.data).first()
         knndb = KNN_Model.query.filter_by(gene_id=gene.gene_id).first()
         if knndb and (str(knndb.population_id) == str(self.pop_id.data)):
-            raise ValidationError("There is a model for that gene")
+            raise ValidationError("There is a model for that gene and population")
 
 class RF(Add_Gene_Model):
     tree = IntegerField("Tree", validators=[DataRequired()])
     submit = SubmitField("Add Gene Model")
+    
+    def validate_genename(self, genename):
+        gene = Gene.query.filter_by(gene_name=genename.data).first()
+        rfdb = RF_Model.query.filter_by(gene_id=gene.gene_id).first()
+        if rfdb and (str(rfdb.population_id) == str(self.pop_id.data)):
+            raise ValidationError("There is a model for that gene and population")
 
 
 class SVR(Add_Gene_Model):
@@ -47,6 +55,12 @@ class SVR(Add_Gene_Model):
     degree = IntegerField("Degree", validators=[DataRequired()])
     c = DecimalField("C", validators=[DataRequired()])
     submit = SubmitField("Add Gene Model")
+
+    def validate_genename(self, genename):
+        gene = Gene.query.filter_by(gene_name=genename.data).first()
+        svrdb = SVR_Model.query.filter_by(gene_id=gene.gene_id).first()
+        if svrdb and (str(svrdb.population_id) == str(self.pop_id.data)):
+            raise ValidationError("There is a model for that gene and population")
 
 class RegistrationForm(FlaskForm):
     firstname = StringField('First Name',

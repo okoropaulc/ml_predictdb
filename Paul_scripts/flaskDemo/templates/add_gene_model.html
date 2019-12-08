@@ -16,9 +16,12 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.genename(class="form-control form-control-lg") }}
+                    {{ form.genename(class="selectpicker form-control form-control-lg", title="Select Gene name", **{'data-live-search':'true'}) }}
                 {% endif %}
             </div>
+			
+			
+			
 			<div class="form-group">
                 {{ form.pop_id.label(class="form-control-label") }}
                 {% if form.pop_id.errors %}

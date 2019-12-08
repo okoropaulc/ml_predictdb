@@ -1,0 +1,21 @@
+{% extends "add_gene_model.html" %}
+
+			{% block model %}
+			
+            <div class="form-group">
+                {{ form.tree.label(class="form-control-label") }}
+                {% if form.tree.errors %}
+                    {{ form.tree(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.tree.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.tree(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+			
+			
+			{% endblock model %}
+			
