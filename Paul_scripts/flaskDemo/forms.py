@@ -10,7 +10,6 @@ from wtforms.fields.html5 import DateField
 from wtforms.fields import Field
 import sys
 
-
 gene_names = Gene.query.with_entities(Gene.gene_name).distinct()
 gene_name_choices = [(row[0], row[0]) for row in gene_names]
 
@@ -105,3 +104,25 @@ class GeneModelForm(FlaskForm):
     pop = SelectMultipleField("Population", choices=popchoices, validators=[InputRequired()])
     submit = SubmitField("Get Results")
 
+class GeneForm(FlaskForm):
+    genes = Gene.query.with_entities(Gene.gene_id, Gene.chromosome_no, Gene.gene_name, Gene.gene_type).order_by(Gene.gene_name)
+    genechoices = [(row[0], row[2]) for row in genes]
+    gene = SelectField("Gene", choices=genechoices, validators=[InputRequired()])
+    submit = SubmitField("Submit")
+
+class UserDeleteForm(FlaskForm):
+    users = User.query.with_entities(User.user_id, User.first_name, User.last_name, User.user_type).order_by(User.last_name)
+    userchoices = [(row[0], row[2] + ", " + row[1]) for row in users if row[3] == "Regular"]
+    user = SelectField("Users", choices=userchoices, coerce=int, validators=[InputRequired()])
+    submit = SubmitField("Submit")
+
+    @classmethod
+    def new(cls):
+        # Instantiate the form
+        form = cls()
+
+        # Update the choices for the agency field
+        users = User.query.with_entities(User.user_id, User.first_name, User.last_name, User.user_type).order_by(User.last_name)
+        userchoices = [(row[0], row[2] + ", " + row[1]) for row in users if row[3] == "Regular"]
+        form.user.choices = userchoices
+        return form

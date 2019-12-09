@@ -1,25 +1,46 @@
 import os
 import secrets
+import sys
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from flaskDemo import app, db, bcrypt
-from flaskDemo.forms import Add_Gene_Model, KNN, RF, SVR, RegistrationForm, LoginForm, GeneModelForm
+from flaskDemo.forms import Add_Gene_Model, KNN, RF, SVR, RegistrationForm, LoginForm, GeneModelForm, GeneForm, UserDeleteForm
 from flaskDemo.models import Algorithm, Gene, Job, KNN_Model, Population, Pred_Result, RF_Model, SVR_Model, User
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
-import sys
 
-"""
-@app.route("/")
-@app.route("/home")
-def home():
-    genes = Gene.query.all()
-    return render_template('all_gene.html', outString = genes)
-
-"""
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/home", methods=['GET', 'POST'])
 def home():
+    if current_user.is_authenticated:
+        return render_template('dashboard.html', title='Dashboard')
+    return redirect(url_for('login'))
+
+@app.route("/basic", methods=['GET', 'POST'])
+def basic():    
+    genes = Gene.query.all()
+    if current_user.is_authenticated:
+        form = GeneForm()
+        if form.validate_on_submit():
+            geneID = form.gene.data
+            geneinfo = db.engine.execute("SELECT * FROM gene WHERE gene_id = %s", geneID).fetchone()
+            
+            knn = db.engine.execute("SELECT population_description, cross_val_performance FROM knn_model NATURAL JOIN population WHERE gene_id = %s", geneID).fetchall()
+            rf = db.engine.execute("SELECT population_description, cross_val_performance FROM rf_model NATURAL JOIN population WHERE gene_id = %s", geneID).fetchall()
+            svr = db.engine.execute("SELECT population_description, cross_val_performance FROM svr_model NATURAL JOIN population WHERE gene_id = %s", geneID).fetchall()
+                  
+            count1 = db.engine.execute("SELECT COUNT(*) FROM knn_model WHERE gene_id = %s", geneID).scalar()
+            count2 = db.engine.execute("SELECT COUNT(*) FROM rf_model WHERE gene_id = %s", geneID).scalar()
+            count3 = db.engine.execute("SELECT COUNT(*) FROM svr_model WHERE gene_id = %s", geneID).scalar()
+            count = count1 + count2 + count3
+            
+            return render_template('results_basic.html', title='Results', geneinfo=geneinfo, knn=knn, rf=rf, svr=svr, count=count)
+        return render_template('query_basic.html', title='Basic Gene Search',
+                               form=form, legend='Basic Gene Search')
+    return render_template('login.html', title='Login', form=LoginForm())
+
+@app.route("/advanced", methods=['GET', 'POST'])
+def advanced():
     genes = Gene.query.all()
     if current_user.is_authenticated:
         form = GeneModelForm()
@@ -72,17 +93,23 @@ def home():
             print(results, file=sys.stderr)
             print(algo, file=sys.stderr)
 
-            return render_template('results.html', title='Results', results=results, algo=algo)
-        return render_template('query_genome_database.html', title='Query Genome Database',
-                               form=form, legend='Query Genome Database')
-    return render_template('all_gene.html', outString = genes)
+            return render_template('results_advanced.html', title='Results', results=results, algo=algo)
+        return render_template('query_advanced.html', title='Advanced Search',
+                               form=form, legend='Advanced Search')
+    return render_template('login.html', title='Login', form=form)
 
+@app.route("/delete", methods=['GET', 'POST'])
+def deleteuser():
+    if current_user.is_authenticated:
+        form = UserDeleteForm.new()
 
-
-@app.route("/about")
-def about():
-    return ""
-
+        if form.validate_on_submit():
+            User.query.filter_by(user_id = form.user.data).delete()
+            db.session.commit()
+            flash('User has been deleted.', 'success')
+            return redirect(url_for('home'))
+        return render_template('delete_user.html', title='Delete Regular User', form=form, legend='Delete Regular User')
+    return render_template('login.html', title='Login', form=LoginForm())
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -114,59 +141,10 @@ def login():
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
-
-"""
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
-            if user.user_type == "Admin":
-                next_page = request.args.get('next')
-                return redirect(next_page) if next_page else redirect(url_for('admin_home'))
-            else:
-                next_page = request.args.get('next')
-                return redirect(next_page) if next_page else redirect(url_for('regular_home'))
-        else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
-"""
-"""        
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('home'))
-        else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
-
-"""
-
-
-@app.route("/admin_home")
-def admin_home():
-    if current_user.is_authenticated:
-        return "Welcome to Admin Page"
-
-
-@app.route("/regular_home")
-def regular_home():
-    if current_user.is_authenticated:
-        return "Welcome to Regular Page"
-
 @app.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for('home'))
-
-@app.route("/account", methods=['GET', 'POST'])
-@login_required
-def account():
-    return ""
 
 @app.route("/knn_model", methods=['GET', 'POST'])
 def knn_model():
