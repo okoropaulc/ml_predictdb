@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% if current_user.user_type == "Admin" %}
+		<h2>You are an administrator.</h2>
+		<ul>
+		  <li><a class="mr-2" href="{{ url_for('basic') }}">Basic Gene Search</a></li>
+		  <li><a class="mr-2" href="{{ url_for('advanced') }}">Advanced Search</a></li>
+		  <li><a class="mr-2" href="{{ url_for('knn_model') }}">Add KNN</a></li>
+		  <li><a class="mr-2" href="{{ url_for('rf_model') }}">Add RF</a></li>
+		  <li><a class="mr-2" href="{{ url_for('svr_model') }}">Add SVR</a></li>
+		  <li><a class="mr-2" href="{{ url_for('deleteuser') }}">Delete Regular User</a></li>
+		</ul>
+    {% else %}
+		<h2>You are a regular user.</h2>
+		<ul>
+		  <li><a class="mr-2" href="{{ url_for('basic') }}">Basic Gene Search</a></li>
+		  <li><a class="mr-2" href="{{ url_for('advanced') }}">Advanced Search</a></li>
+		</ul>
+	{% endif %}
+{% endblock content %}

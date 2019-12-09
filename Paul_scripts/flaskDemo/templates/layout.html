@@ -26,17 +26,12 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
-			  <a class="nav-item nav-link" href="http://hewlab.org" target="_blank">About</a>	
               {% if current_user.is_authenticated %}
-			  	<a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+			    <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
                 <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-				<a class="nav-item nav-link" href="{{ url_for('knn_model') }}">Add KNN</a>
-				<a class="nav-item nav-link" href="{{ url_for('rf_model') }}">Add RF</a>
-				<a class="nav-item nav-link" href="{{ url_for('svr_model') }}">Add SVR</a>
               {% else %}
                 <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
                 <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
