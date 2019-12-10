@@ -149,107 +149,129 @@ def logout():
 
 @app.route("/knn_model", methods=['GET', 'POST'])
 def knn_model():
-    form = KNN()
-    if form.validate_on_submit():
-        gene = Gene.query.filter_by(gene_name=form.genename.data).first()
-        knn = KNN_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
-                        cross_val_performance=form.cross_val.data,
-                        neighbors=form.neigbor.data, weight=form.weight.data,
-                        p=form.p.data)
-        db.session.add(knn)
-        db.session.commit()
-        flash("You have added the gene model")
-        return redirect(url_for('home'))
-    return render_template('knn_model.html', title='New KNN Gene Model',
-                           form=form, legend='KNN Model')
+    if current_user.is_authenticated:
+        
+        form = KNN()
+        if form.validate_on_submit():
+            gene = Gene.query.filter_by(gene_name=form.genename.data).first()
+            knn = KNN_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
+                            cross_val_performance=form.cross_val.data,
+                            neighbors=form.neigbor.data, weight=form.weight.data,
+                            p=form.p.data)
+            db.session.add(knn)
+            db.session.commit()
+            flash("You have added the gene model")
+            return redirect(url_for('home'))
+        return render_template('knn_model.html', title='New KNN Gene Model',
+                               form=form, legend='KNN Model')
+    return render_template('login.html', title='Login', form=LoginForm())
 
 
 @app.route("/rf_model", methods=['GET', 'POST'])
 def rf_model():
-    form = RF()
-    if form.validate_on_submit():
-        gene = Gene.query.filter_by(gene_name=form.genename.data).first()
-        rf = RF_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
-                        cross_val_performance=form.cross_val.data,
-                        trees=form.tree.data)
-        db.session.add(rf)
-        db.session.commit()
-        flash("You have added the gene model")
-        return redirect(url_for('home'))
-    return render_template('rf_model.html', title='New RF Gene Model',
-                           form=form, legend='RF Model')
+    if current_user.is_authenticated:
+        
+        form = RF()
+        if form.validate_on_submit():
+            gene = Gene.query.filter_by(gene_name=form.genename.data).first()
+            rf = RF_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
+                            cross_val_performance=form.cross_val.data,
+                            trees=form.tree.data)
+            db.session.add(rf)
+            db.session.commit()
+            flash("You have added the gene model")
+            return redirect(url_for('home'))
+        return render_template('rf_model.html', title='New RF Gene Model',
+                               form=form, legend='RF Model')
+    return render_template('login.html', title='Login', form=LoginForm())
 
 
 @app.route("/svr_model", methods=['GET', 'POST'])
 def svr_model():
-    form = SVR()
-    if form.validate_on_submit():
-        gene = Gene.query.filter_by(gene_name=form.genename.data).first()
-        svr = SVR_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
-                        cross_val_performance=form.cross_val.data,
-                        kernel=form.kernel.data, degree=form.degree.data, c=form.c.data)
-        db.session.add(svr)
-        db.session.commit()
-        flash("You have added the gene model")
-        return redirect(url_for('home'))
-    return render_template('svr_model.html', title='New SVR Gene Model',
-                           form=form, legend='SVR Model')
+    if current_user.is_authenticated:
+        form = SVR()
+        if form.validate_on_submit():
+            gene = Gene.query.filter_by(gene_name=form.genename.data).first()
+            svr = SVR_Model(gene_id=gene.gene_id, population_id=form.pop_id.data,
+                            cross_val_performance=form.cross_val.data,
+                            kernel=form.kernel.data, degree=form.degree.data, c=form.c.data)
+            db.session.add(svr)
+            db.session.commit()
+            flash("You have added the gene model")
+            return redirect(url_for('home'))
+        return render_template('svr_model.html', title='New SVR Gene Model',
+                               form=form, legend='SVR Model')
+    return render_template('login.html', title='Login', form=LoginForm())
 
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
-    form = UploadGene()
+    if current_user.is_authenticated:
+        
+        form = UploadGene()
 
-    if form.validate_on_submit():
-        filename = secure_filename(form.file.data.filename)
-        form.file.data.save('' + filename)
-        flash("Gene files uploaded!", "success")
-        return redirect(url_for('upload'))
+        if form.validate_on_submit():
+            filename = secure_filename(form.file.data.filename)
+            form.file.data.save('' + filename)
+            flash("Gene files uploaded!", "success")
+            return redirect(url_for('upload'))
 
-    return render_template('upload.html', form=form)
+        return render_template('upload.html', form=form)
+    return render_template('login.html', title='Login', form=LoginForm())
 
 
 @app.route("/delete_knn", methods=['GET', 'POST'])
 def delete_knn():
-    form = KNNDelete()
-    if form.validate_on_submit():
-        KNN_Model.query.filter_by(gene_id=form.gene_id.data,
-                                  population_id=form.pop_id.data).delete()
-        db.session.commit()
-        flash("The gene has been deleted", "success")
-        return redirect(url_for('home'))
-    return render_template('delete_knn.html', title='Delete Gene Model',
-                           form=form, legend='Delete KNN Model')
+    if current_user.is_authenticated:
+        
+        form = KNNDelete()
+        if form.validate_on_submit():
+            KNN_Model.query.filter_by(gene_id=form.gene_id.data,
+                                      population_id=form.pop_id.data).delete()
+            db.session.commit()
+            flash("The gene has been deleted", "success")
+            return redirect(url_for('home'))
+        return render_template('delete_knn.html', title='Delete Gene Model',
+                               form=form, legend='Delete KNN Model')
+    return render_template('login.html', title='Login', form=LoginForm())
 
 
 
 @app.route("/delete_rf", methods=['GET', 'POST'])
 def delete_rf():
-    form = RFDelete()
-    if form.validate_on_submit():
-        RF_Model.query.filter_by(gene_id=form.gene_id.data,
-                                  population_id=form.pop_id.data).delete()
-        db.session.commit()
-        flash("The gene has been deleted", "success")
-        return redirect(url_for('home'))
-    return render_template('delete_rf.html', title='Delete Gene Model',
-                           form=form, legend='Delete RF Model')
+    if current_user.is_authenticated:
+        form = RFDelete()
+        if form.validate_on_submit():
+            RF_Model.query.filter_by(gene_id=form.gene_id.data,
+                                      population_id=form.pop_id.data).delete()
+            db.session.commit()
+            flash("The gene has been deleted", "success")
+            return redirect(url_for('home'))
+        return render_template('delete_rf.html', title='Delete Gene Model',
+                               form=form, legend='Delete RF Model')
+    return render_template('login.html', title='Login', form=LoginForm())
 
 
 @app.route("/delete_svr", methods=['GET', 'POST'])
 def delete_svr():
-    form = SVRDelete()
-    if form.validate_on_submit():
-        SVR_Model.query.filter_by(gene_id=form.gene_id.data,
-                                  population_id=form.pop_id.data).delete()
-        db.session.commit()
-        flash("The gene has been deleted", "success")
-        return redirect(url_for('home'))
-    return render_template('delete_svr.html', title='Delete Gene Model',
-                           form=form, legend='Delete SVR Model')
+    if current_user.is_authenticated:
+        
+        form = SVRDelete()
+        if form.validate_on_submit():
+            SVR_Model.query.filter_by(gene_id=form.gene_id.data,
+                                      population_id=form.pop_id.data).delete()
+            db.session.commit()
+            flash("The gene has been deleted", "success")
+            return redirect(url_for('home'))
+        return render_template('delete_svr.html', title='Delete Gene Model',
+                               form=form, legend='Delete SVR Model')
+    return render_template('login.html', title='Login', form=LoginForm())
 
 
 
 @app.route('/submit_job')
 def submit_job():
-    return "<h2> This page is under construction</h2>"
+    if current_user.is_authenticated:
+        
+        return "<h2> This page is under construction</h2>"
+    return render_template('login.html', title='Login', form=LoginForm())
