@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+	<h2>{{ geneinfo.gene_name }} ( {{geneinfo.gene_type}} ): Chromosome # {{geneinfo.chromosome_no}}</h2>
+	<h3>{{ count }} values found!</h3>
+	<table class="table">
+		<thead class="bg-primary"
+			<tr>
+				<th>Algorithm</th>
+				<th>Population</th>
+				<th>Cross-Val Performance</th>
+			</tr>
+		</thead>
+		{% for row in knn %}
+			<tr>
+				<td>KNN</td>
+				<td>{{ row.population_description }}</td>
+				<td>{{ row.cross_val_performance }}</td>
+			</tr>
+		{% endfor %}
+		{% for row in rf %}
+			<tr>
+				<td>RF</td>
+				<td>{{ row.population_description }}</td>
+				<td>{{ row.cross_val_performance }}</td>
+			</tr>
+		{% endfor %}
+		{% for row in svr %}
+			<tr>
+				<td>SVR</td>
+				<td>{{ row.population_description }}</td>
+				<td>{{ row.cross_val_performance }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock content %}

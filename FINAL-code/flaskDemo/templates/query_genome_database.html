@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+			<div class="form-group">
+                {{ form.algo.label(class="form-control-label") }}
+                {% if form.algo.errors %}
+                    {{ form.algo(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.algo.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.algo(class="selectpicker form-control form-control-lg", title="Select an Algorithm") }}
+                {% endif %}
+            </div>
+            <div>
+			    {{ form.gene.label(class="form-control-label") }}
+				{% if form.gene.errors %}
+                    {{ form.gene(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.gene.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+					{{ form.gene(class="selectpicker form-control form-control-lg", title="Select One or More Genes", **{'data-live-search':'true'}) }}
+				{% endif %}
+            </div>
+			<div class="form-group">
+                {{ form.pop.label(class="form-control-label") }}
+                {% if form.pop.errors %}
+                    {{ form.pop(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.pop.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.pop(class="selectpicker form-control form-control-lg", title="Select One or More Populations") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+		<div class="content">
+			<h1>{{ crossval }}</h1>
+        </div>
+    </form>
+</div>
+{% endblock content %}

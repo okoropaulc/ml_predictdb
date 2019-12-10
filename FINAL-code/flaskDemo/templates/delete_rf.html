@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <div>
+			    {{ form.gene_id.label(class="form-control-label") }}
+				{% if form.gene_id.errors %}
+                    {{ form.gene_id(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.gene_id.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+					{{ form.gene_id(class="selectpicker form-control form-control-lg", title="Select a Regular User", **{'data-live-search':'true'}) }}
+				{% endif %}
+            </div>
+			
+			<div class="form-group">
+                {{ form.pop_id.label(class="form-control-label") }}
+                {% if form.pop_id.errors %}
+                    {{ form.pop_id(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.pop_id.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.pop_id(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

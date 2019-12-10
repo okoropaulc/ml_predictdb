@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+			{% block model %} {% endblock model %}
+            <div class="form-group">
+                {{ form.genename.label(class="form-control-label") }}
+                {% if form.genename.errors %}
+                    {{ form.genename(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.genename.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.genename(class="selectpicker form-control form-control-lg", title="Select Gene name", **{'data-live-search':'true'}) }}
+                {% endif %}
+            </div>
+			
+			
+			
+			<div class="form-group">
+                {{ form.pop_id.label(class="form-control-label") }}
+                {% if form.pop_id.errors %}
+                    {{ form.pop_id(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.pop_id.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.pop_id(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+			<div class="form-group">
+                {{ form.cross_val.label(class="form-control-label") }}
+                {% if form.cross_val.errors %}
+                    {{ form.cross_val(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.cross_val.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.cross_val(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

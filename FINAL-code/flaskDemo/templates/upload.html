@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block content %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<br></br>
+{{wtf.quick_form(form)}}
+
+{% endblock content %}
