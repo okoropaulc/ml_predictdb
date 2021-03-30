@@ -7,7 +7,7 @@ from mysql.connector import Error
 conn = mysql.connector.connect(host='localhost',
                                        database='paul',
                                        user='paul',
-                                       password='Paul1512$')#put your user and password
+                                       password='***')#put your user and password
 
 
 if conn.is_connected():
